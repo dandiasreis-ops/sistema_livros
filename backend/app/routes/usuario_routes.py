@@ -1,5 +1,9 @@
 from flask import Blueprint, request, jsonify
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import (
+    create_access_token,
+    jwt_required,
+    get_jwt_identity
+)
 from app import db
 from app.models.usuario_model import Usuario
 
@@ -100,7 +104,7 @@ def login():
         }), 401
 
     # gerar token
-    token = create_access_token(identity=usuario.id)
+    token = create_access_token(identity=str(usuario.id))
 
     return jsonify({
         'mensagem': 'Login realizado com sucesso',
@@ -110,4 +114,26 @@ def login():
             'nome': usuario.nome,
             'email': usuario.email
         }
+    })
+
+# ROTA PROTEGIDA
+@usuario_bp.route('/api/perfil', methods=['GET'])
+@jwt_required()
+def perfil():
+
+    # pega id do usuário pelo token
+    usuario_id = int(get_jwt_identity())
+
+    usuario = Usuario.query.get(usuario_id)
+
+    if not usuario:
+        return jsonify({
+            'erro': 'Usuário não encontrado'
+        }), 404
+
+    return jsonify({
+        'id': usuario.id,
+        'nome': usuario.nome,
+        'email': usuario.email,
+        'saldo_creditos': usuario.saldo_creditos
     })
