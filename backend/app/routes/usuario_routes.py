@@ -47,9 +47,10 @@ def criar_usuario():
     usuario = Usuario(
         nome=dados['nome'],
         email=dados['email'],
-        senha_hash=dados['senha'],
         cpf=dados['cpf']
     )
+
+    usuario.set_senha(dados['senha'])
 
     db.session.add(usuario)
     db.session.commit()
