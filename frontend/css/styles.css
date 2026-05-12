@@ -1,0 +1,73 @@
+/* 1. CONFIGURAÇÃO GERAL E FUNDO */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+    /* Caminho para a sua imagem que está na pasta img */
+
+   background-image: url('../img/fundo.jpg');
+
+    /* Faz a imagem cobrir a tela toda sem repetir */
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+
+    /* Centraliza tudo que estiver dentro do body */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+/* 2. MENU DE NAVEGAÇÃO (BOTÕES) */
+nav {
+    background-color: rgba(255, 255, 255, 0.9); /* Branco transparente */
+    padding: 15px 30px;
+    border-radius: 0 0 20px 20px;
+    position: fixed; /* Fixa no topo da tela */
+    top: 0;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    z-index: 1000;
+}
+
+button {
+    padding: 12px 20px;
+    margin: 0 8px;
+    border: none;
+    border-radius: 8px;
+    background-color: #004587; /* Azul Mackenzie */
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    background-color: #002d58;
+    transform: translateY(-2px); /* Botão sobe um pouquinho ao passar o mouse */
+}
+
+/* 3. texto central (ONDE O TEXTO MUDA) */
+#app {
+    background-color: rgba(255, 255, 255, 0.95); /* Fundo quase branco para leitura */
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    width: 60%;
+    max-width: 550px;
+    text-align: center;
+    margin-top: 1px; /* Evita que o card fique embaixo do menu fixo */
+}
+
+/* Estilo para os títulos dentro do app */
+h1 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+p {
+    color: #666;
+    line-height: 1.6;
+}
