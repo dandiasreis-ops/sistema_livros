@@ -11,6 +11,39 @@ def criar_usuario():
 
     dados = request.json
 
+    # validação básica
+    if not dados.get('nome'):
+        return jsonify({'erro': 'Nome é obrigatório'}), 400
+
+    if not dados.get('email'):
+        return jsonify({'erro': 'Email é obrigatório'}), 400
+
+    if not dados.get('senha'):
+        return jsonify({'erro': 'Senha é obrigatória'}), 400
+
+    if not dados.get('cpf'):
+        return jsonify({'erro': 'CPF é obrigatório'}), 400
+
+    # verificar email existente
+    email_existente = Usuario.query.filter_by(
+        email=dados['email']
+    ).first()
+
+    if email_existente:
+        return jsonify({
+            'erro': 'Email já cadastrado'
+        }), 400
+
+    # verificar cpf existente
+    cpf_existente = Usuario.query.filter_by(
+        cpf=dados['cpf']
+    ).first()
+
+    if cpf_existente:
+        return jsonify({
+            'erro': 'CPF já cadastrado'
+        }), 400
+
     usuario = Usuario(
         nome=dados['nome'],
         email=dados['email'],
