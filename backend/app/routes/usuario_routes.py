@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from flask_jwt_extended import create_access_token
 from app import db
 from app.models.usuario_model import Usuario
 
@@ -78,3 +79,35 @@ def listar_usuarios():
         })
 
     return jsonify(lista_usuarios)
+
+# LOGIN
+@usuario_bp.route('/api/login', methods=['POST'])
+def login():
+
+    dados = request.json
+
+    email = dados.get('email')
+    senha = dados.get('senha')
+
+    # procurar usuário
+    usuario = Usuario.query.filter_by(email=email).first()
+
+    # validar usuário e senha
+    if not usuario or not usuario.verificar_senha(senha):
+
+        return jsonify({
+            'erro': 'Email ou senha inválidos'
+        }), 401
+
+    # gerar token
+    token = create_access_token(identity=usuario.id)
+
+    return jsonify({
+        'mensagem': 'Login realizado com sucesso',
+        'token': token,
+        'usuario': {
+            'id': usuario.id,
+            'nome': usuario.nome,
+            'email': usuario.email
+        }
+    })
