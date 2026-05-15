@@ -10,7 +10,7 @@ filho_bp = Blueprint('filhos', __name__)
 @filho_bp.route('/api/filhos', methods=['GET'])
 def listar_filhos():
 
-    usuario_id = request.args.get('usuario_id')
+    usuario_id = int(request.args.get('usuario_id'))
 
     filhos = Estudante.query.filter_by(
         usuario_id=usuario_id
@@ -37,7 +37,7 @@ def cadastrar_estudante():
     dados = request.json
 
     estudante = Estudante(
-        usuario_id=1,  # temporário
+        usuario_id=dados.get('usuario_id'),
         nome=dados.get('nome'),
         ra=dados.get('ra'),
         ano_escolar=dados.get('ano_escolar'),

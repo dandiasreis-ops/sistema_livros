@@ -97,6 +97,7 @@ VALUES
     4
 );
 
-#SELECT * FROM usuarios;
+SELECT * FROM usuarios;
+SELECT * FROM estudantes;
 
-#DELETE FROM usuarios;
+#DELETE FROM estudantes;

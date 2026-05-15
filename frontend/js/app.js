@@ -1,4 +1,10 @@
-//const API_URL = "http://localhost:3000";
+// Função extra para normalizar a busca
+function normalizarTexto(texto) {
+    return texto
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase();
+}
 
 // Função principal de navegação da SPA
 let usuarioLogado = false;
@@ -63,9 +69,10 @@ else if (page === 'ver_livros' || page === 'acervo') {
 
             document.getElementById('busca_livro').oninput = (e) => {
                 const termo = e.target.value.toLowerCase();
-                const filtrados = livros.filter(l =>
-                    l.titulo.toLowerCase().includes(termo) ||
-                    (l.autor || '').toLowerCase().includes(termo)
+                const buscaNormalizada = normalizarTexto(termo);
+                const filtrados = livros.filter(livro =>
+                    normalizarTexto(livro.titulo)
+                        .includes(buscaNormalizada)
                 );
                 renderizar(filtrados);
             };
@@ -296,7 +303,7 @@ else if (page === 'ver_livros' || page === 'acervo') {
     `;
 
     // Lógica para enviar os dados para o Banco (POST)
-    document.getElementById('form-estudante').onsubmit = (e) => {
+    document.getElementById('form-estudante').onsubmit = async (e) => {
         e.preventDefault();
 
         // Pegamos os valores do formulário
@@ -310,10 +317,17 @@ else if (page === 'ver_livros' || page === 'acervo') {
         };
 
         // ENVIANDO PARA O BANCO DE DADOS
-        fetch(`${API_URL}/api/estudantes`, {
+        const usuarioId = localStorage.getItem('usuario_id');
+
+        await fetch(`${API_URL}/api/estudantes`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(dadosEstudante)
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                usuario_id: usuarioId,
+                ...dadosEstudante
+            })
         })
         .then(res => {
             if (res.ok) {
