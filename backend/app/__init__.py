@@ -6,6 +6,7 @@ from flask_jwt_extended import JWTManager
 from dotenv import load_dotenv
 import os
 
+
 load_dotenv()
 
 
@@ -32,6 +33,13 @@ def create_app():
         return {"mensagem": "API do Sistema de Livros funcionando!"}
 
     from app.routes.usuario_routes import usuario_bp
+    from app.routes.livro_routes import livro_bp
+    from app.routes.dashboard_routes import dashboard_bp
+    from app.routes.filho_routes import filho_bp
+
     app.register_blueprint(usuario_bp)
+    app.register_blueprint(livro_bp)
+    app.register_blueprint(dashboard_bp)
+    app.register_blueprint(filho_bp)
 
     return app

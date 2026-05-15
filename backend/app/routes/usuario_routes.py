@@ -137,3 +137,20 @@ def perfil():
         'email': usuario.email,
         'saldo_creditos': usuario.saldo_creditos
     })
+
+@usuario_bp.route('/api/usuario/<int:id>', methods=['GET'])
+def buscar_usuario(id):
+
+    usuario = Usuario.query.get(id)
+
+    if not usuario:
+        return jsonify({
+            'erro': 'Usuário não encontrado'
+        }), 404
+
+    return jsonify({
+        'id': usuario.id,
+        'nome': usuario.nome,
+        'email': usuario.email,
+        'cpf': usuario.cpf
+    })

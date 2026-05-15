@@ -1,9 +1,7 @@
-
-
-
+//const API_URL = "http://localhost:3000";
 
 // Função principal de navegação da SPA
-let usuarioLogado = true;
+let usuarioLogado = false;
 function navigate(page) {
     // 1. Identifica o "palco" onde a tela será exibida
     const app = document.getElementById('app');
@@ -36,7 +34,7 @@ else if (page === 'ver_livros' || page === 'acervo') {
     `;
 
     // Busca os dados no servidor (Tópico 4)
-    fetch('https://api.seusistema.com/livros')
+    fetch(`${API_URL}/api/livros`)
         .then(res => res.json())
         .then(livros => {
             const vitrine = document.getElementById('vitrine-livros');
@@ -65,7 +63,10 @@ else if (page === 'ver_livros' || page === 'acervo') {
 
             document.getElementById('busca_livro').oninput = (e) => {
                 const termo = e.target.value.toLowerCase();
-                const filtrados = livros.filter(l => l.titulo.toLowerCase().includes(termo));
+                const filtrados = livros.filter(l =>
+                    l.titulo.toLowerCase().includes(termo) ||
+                    (l.autor || '').toLowerCase().includes(termo)
+                );
                 renderizar(filtrados);
             };
         })
@@ -150,7 +151,7 @@ else if (page === 'ver_livros' || page === 'acervo') {
         app.innerHTML = `<div style="padding: 20px; text-align: center;">Carregando seu painel...</div>`;
 
         // 3. Chamada real para o Backend (Tópico 4)
-        fetch('https://api.seusistema.com/dashboard?usuario_id=123')
+        fetch(`${API_URL}/api/dashboard?usuario_id=123`)
             .then(res => res.json())
             .then(dados => {
                 // AQUI UNIMOS O VISUAL BONITO COM TODOS OS SEUS BOTÕES
@@ -269,7 +270,7 @@ else if (page === 'ver_livros' || page === 'acervo') {
         };
 
         // ENVIANDO PARA O BANCO DE DADOS
-        fetch('https://api.seusistema.com/estudantes', {
+        fetch(`${API_URL}/api/estudantes`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(dadosEstudante)
@@ -312,12 +313,6 @@ else if (page === 'ver_livros' || page === 'acervo') {
             style="padding: 12px; border-radius: 8px; border: 1px solid #ccc;">
     </div>
 
-    <button type="submit" id="btn-auth" 
-        style="background-color: #004587; color: white; padding: 12px; border-radius: 8px; border: none; font-weight: bold; margin-top: 10px; cursor: pointer;">
-        Entrar
-    </button>
-</form>
-
                     <button type="submit" id="btn-auth" 
                         style="background-color: #004587; color: white; padding: 12px; border-radius: 8px; border: none; font-weight: bold; margin-top: 10px;">
                         Entrar
@@ -359,11 +354,80 @@ else if (page === 'ver_livros' || page === 'acervo') {
         };
 
         // Lógica ao clicar no botão (Submit)
-        document.getElementById('form-auth').onsubmit = (e) => {
+        document.getElementById('form-auth').onsubmit = async (e) => {
+
             e.preventDefault();
-            usuarioLogado = true; // Ativa o acesso global
-            alert(modoCadastro ? "Conta criada com sucesso!" : "Login realizado!");
-            navigate('home'); // Manda o usuário para a tela inicial logada
+
+            const email = document.getElementById('email_auth').value;
+            const senha = document.getElementById('senha_auth').value;
+
+            try {
+
+                // CADASTRO
+                if (modoCadastro) {
+
+                    const cpf = document.getElementById('cpf_auth').value;
+
+                    const resposta = await fetch(`${API_URL}/api/usuarios`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            nome: email.split('@')[0],
+                            email: email,
+                            senha: senha,
+                            cpf: cpf
+                        })
+                    });
+
+                    const dados = await resposta.json();
+
+                    if (!resposta.ok) {
+                        alert(dados.erro || 'Erro ao cadastrar');
+                        return;
+                    }
+
+                    alert('Conta criada com sucesso!');
+
+                }
+
+                // LOGIN
+                else {
+
+                    const resposta = await fetch(`${API_URL}/api/login`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            email: email,
+                            senha: senha
+                        })
+                    });
+
+                    const dados = await resposta.json();
+
+                    if (!resposta.ok) {
+                        alert(dados.erro || 'Erro no login');
+                        return;
+                    }
+
+                    localStorage.setItem('token', dados.token);
+
+                    usuarioLogado = true;
+
+                    alert('Login realizado com sucesso!');
+
+                    navigate('perfil');
+                }
+
+            } catch (erro) {
+
+                console.error(erro);
+
+                alert('Erro ao conectar com o servidor');
+            }
         };
     }
    else if (page === 'consultar_dados') {
@@ -371,7 +435,7 @@ else if (page === 'ver_livros' || page === 'acervo') {
     app.innerHTML = `<div style="padding: 20px; text-align: center;">Buscando seu extrato e posição na fila...</div>`;
 
     // 2. Busca os dados no banco (Saldo + Histórico)
-    fetch('https://api.seusistema.com/extrato?usuario_id=123')
+    fetch(`${API_URL}/api/extrato?usuario_id=123`)
         .then(res => res.json())
         .then(dados => {
             let doadosHtml = "";
@@ -454,7 +518,7 @@ else if (page === 'ver_livros' || page === 'acervo') {
         app.innerHTML = `<div style="padding: 20px; text-align: center;">Buscando suas informações...</div>`;
 
         // 1. Buscamos os dados atuais do usuário logado
-        fetch('https://api.seusistema.com/usuario/123') // ID do usuário logado
+        fetch(`${API_URL}/api/usuario/123`) // ID do usuário logado
             .then(res => res.json())
             .then(usuario => {
                 app.innerHTML = `
@@ -528,7 +592,7 @@ else if (page === 'ver_livros' || page === 'acervo') {
     `;
 
     // 2. Chamamos o banco de dados
-    fetch('https://api.seusistema.com/filhos?usuario_id=123')
+    fetch(`${API_URL}/api/filhos?usuario_id=123`)
         .then(res => res.json())
         .then(filhos => {
             const container = document.getElementById('container-lista');
@@ -585,7 +649,7 @@ else if (page === 'ver_livros' || page === 'acervo') {
 
 // Carrega a página inicial assim que o site abrir
 window.onload = () => navigate('home');
-function confirmarExclusao(nome) {
+function confirmarExclusao(nome, id) {
     // Abre aquela janelinha de confirmação do navegador
     const certeza = confirm("Tem certeza que deseja excluir os dados de " + nome + "?");
 

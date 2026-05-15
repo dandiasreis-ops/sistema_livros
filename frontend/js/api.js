@@ -5,7 +5,7 @@ const ApiService = {
     // Função para buscar dados (ex: lista de livros)
     async buscarLivros() {
         try {
-            const resposta = await fetch(`${API_URL}/livros`);
+            const resposta = await fetch(`${API_URL}/api/livros`);
             if (!resposta.ok) throw new Error("Erro ao buscar livros");
             return await resposta.json();
         } catch (erro) {
@@ -17,7 +17,7 @@ const ApiService = {
     // Função para enviar dados (ex: nova doação)
     async enviarDoacao(dados) {
         try {
-            const resposta = await fetch(`${API_URL}/doacoes`, {
+            const resposta = await fetch(`${API_URL}/api/doacoes`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(dados)
