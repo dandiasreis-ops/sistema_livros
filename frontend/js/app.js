@@ -92,12 +92,15 @@ else if (page === 'ver_livros' || page === 'acervo') {
                 <h2 style="font-size: 1.2rem; margin-bottom: 10px;">Cadastro de Livro</h2>
                 <form id="form-doacao" style="display: flex; flex-direction: column; gap: 8px; text-align: left;">
                     
+                    <input type="text" id="titulo" placeholder="Título do Livro" required style="padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
+
                     <input type="text" id="isbn" placeholder="ISBN" required style="padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
                     
-                    <select id="qualidade" style="padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
-                        <option value="" disabled selected>Qualidade</option>
-                        <option value="novo">Novo</option>
-                        <option value="usado">Usado</option>
+                    <select id="estado" style="padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
+                        <option value="" disabled selected>Estado</option>
+                        <option value="excelente">Excelente</option>
+                        <option value="bom">Bom</option>
+                        <option value="regular">Regular</option>
                     </select>
 
                     <div style="display: flex; gap: 5px;">
@@ -114,18 +117,54 @@ else if (page === 'ver_livros' || page === 'acervo') {
 
                     <input type="text" id="origem_livro" placeholder="Origem do Livro" style="padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
                     
-                    <input type="number" id="preco_creditos" placeholder="Preço em Créditos" style="padding: 8px; border-radius: 5px; border: 1px solid #ccc; background-color: #f0fdf4;">
-
                     <button type="submit" style="background-color: #28a745; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; font-weight: bold;">
                         Cadastrar Livro
                     </button>
                 </form>
             `;
 
-            document.getElementById('form-doacao').onsubmit = (e) => {
+            document.getElementById('form-doacao').onsubmit = async (e) => {
+
                 e.preventDefault();
-                alert('Livro cadastrado com sucesso no banco de dados!');
-                navigate('home');
+
+                const dadosLivro = {
+                    isbn: document.getElementById('isbn').value,
+                    titulo: document.getElementById('titulo').value,
+                    disciplina: document.getElementById('disciplina').value,
+                    estado: document.getElementById('estado').value,
+                    quantidade: document.getElementById('quantidade').value
+                };
+
+                try {
+
+                    const resposta = await fetch(`${API_URL}/api/livros`, {
+
+                        method: 'POST',
+
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+
+                        body: JSON.stringify(dadosLivro)
+                    });
+
+                    const dados = await resposta.json();
+
+                    if (!resposta.ok) {
+                        alert(dados.erro || 'Erro ao cadastrar livro');
+                        return;
+                    }
+
+                    alert('Livro cadastrado com sucesso!');
+
+                    navigate('ver_livros');
+
+                } catch (erro) {
+
+                    console.error(erro);
+
+                    alert('Erro ao conectar com servidor');
+                }
             };
         }
     }
@@ -151,7 +190,8 @@ else if (page === 'ver_livros' || page === 'acervo') {
         app.innerHTML = `<div style="padding: 20px; text-align: center;">Carregando seu painel...</div>`;
 
         // 3. Chamada real para o Backend (Tópico 4)
-        fetch(`${API_URL}/api/dashboard?usuario_id=123`)
+        const usuarioId = localStorage.getItem('usuario_id');
+        fetch(`${API_URL}/api/dashboard?usuario_id=${usuarioId}`)
             .then(res => res.json())
             .then(dados => {
                 // AQUI UNIMOS O VISUAL BONITO COM TODOS OS SEUS BOTÕES
@@ -414,6 +454,7 @@ else if (page === 'ver_livros' || page === 'acervo') {
                     }
 
                     localStorage.setItem('token', dados.token);
+                    localStorage.setItem('usuario_id', dados.usuario.id);
 
                     usuarioLogado = true;
 
@@ -435,7 +476,8 @@ else if (page === 'ver_livros' || page === 'acervo') {
     app.innerHTML = `<div style="padding: 20px; text-align: center;">Buscando seu extrato e posição na fila...</div>`;
 
     // 2. Busca os dados no banco (Saldo + Histórico)
-    fetch(`${API_URL}/api/extrato?usuario_id=123`)
+    const usuarioId = localStorage.getItem('usuario_id');
+    fetch(`${API_URL}/api/extrato?usuario_id=${usuarioId}`)
         .then(res => res.json())
         .then(dados => {
             let doadosHtml = "";
@@ -518,7 +560,8 @@ else if (page === 'ver_livros' || page === 'acervo') {
         app.innerHTML = `<div style="padding: 20px; text-align: center;">Buscando suas informações...</div>`;
 
         // 1. Buscamos os dados atuais do usuário logado
-        fetch(`${API_URL}/api/usuario/123`) // ID do usuário logado
+        const usuarioId = localStorage.getItem('usuario_id');
+        fetch(`${API_URL}/api/usuario/${usuarioId}`) // ID do usuário logado
             .then(res => res.json())
             .then(usuario => {
                 app.innerHTML = `
@@ -592,7 +635,8 @@ else if (page === 'ver_livros' || page === 'acervo') {
     `;
 
     // 2. Chamamos o banco de dados
-    fetch(`${API_URL}/api/filhos?usuario_id=123`)
+    const usuarioId = localStorage.getItem('usuario_id');
+    fetch(`${API_URL}/api/filhos?usuario_id=${usuarioId}`)
         .then(res => res.json())
         .then(filhos => {
             const container = document.getElementById('container-lista');
