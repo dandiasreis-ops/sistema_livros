@@ -36,10 +36,14 @@ def create_app():
     from app.routes.livro_routes import livro_bp
     from app.routes.dashboard_routes import dashboard_bp
     from app.routes.filho_routes import filho_bp
+    from app.routes.retirada_routes import retirada_bp
+    from app.routes.historico_routes import historico_bp
 
     app.register_blueprint(usuario_bp)
     app.register_blueprint(livro_bp)
     app.register_blueprint(dashboard_bp)
     app.register_blueprint(filho_bp)
+    app.register_blueprint(retirada_bp)
+    app.register_blueprint(historico_bp)
 
     return app

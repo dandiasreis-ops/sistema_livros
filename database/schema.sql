@@ -97,7 +97,17 @@ VALUES
     4
 );
 
+#Selects para testes
 SELECT * FROM usuarios;
+SELECT * FROM livros;
 SELECT * FROM estudantes;
+SELECT * FROM doacoes;
+SELECT * FROM retiradas;
+SELECT * FROM historico;
 
-#DELETE FROM estudantes;
+#DELETE FROM estudantes; - usar com cuidado!!!
+
+#Colocar saldo específico para testes
+UPDATE usuarios
+SET saldo_creditos = 200
+WHERE id = 7;

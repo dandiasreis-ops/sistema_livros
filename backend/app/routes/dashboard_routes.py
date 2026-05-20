@@ -1,38 +1,26 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
+
+from app.models.usuario_model import Usuario
 
 dashboard_bp = Blueprint('dashboard', __name__)
+
 
 @dashboard_bp.route('/api/dashboard', methods=['GET'])
 def dashboard():
 
+    usuario_id = request.args.get('usuario_id')
+
+    usuario = Usuario.query.get(usuario_id)
+
+    if not usuario:
+
+        return jsonify({
+            "erro": "Usuário não encontrado"
+        }), 404
+
     dados = {
-        "nome": "Daniel",
-        "pontos_total": 120
-    }
-
-    return jsonify(dados)
-
-@dashboard_bp.route('/api/extrato', methods=['GET'])
-def extrato():
-
-    dados = {
-        "pontos_total": 120,
-        "historico": [
-            {
-                "titulo": "Cálculo I",
-                "tipo": "doacao",
-                "pontos": 30,
-                "data": "10/05/2026"
-            },
-            {
-                "titulo": "Física Geral",
-                "tipo": "retirada",
-                "pontos": 25,
-                "data": "11/05/2026",
-                "status": "fila",
-                "posicao": 2
-            }
-        ]
+        "nome": usuario.nome,
+        "pontos_total": usuario.saldo_creditos
     }
 
     return jsonify(dados)

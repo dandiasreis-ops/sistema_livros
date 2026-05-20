@@ -57,7 +57,10 @@ else if (page === 'ver_livros' || page === 'acervo') {
                         <strong style="display: block; font-size: 0.85rem; height: 35px; overflow: hidden;">${livro.titulo}</strong>
                         <div style="color: #28a745; font-weight: bold; margin: 8px 0;">${livro.pontos} pts</div>
                         
-                        <button onclick="tentarSolicitar('${livro.titulo}', ${livro.pontos})" 
+                        <button onclick="tentarSolicitar(
+                            '${livro.isbn}',
+                            '${livro.titulo}',
+                            ${livro.pontos})" 
                             style="width: 100%; background: #004587; color: white; border: none; padding: 8px; border-radius: 5px; font-size: 0.8rem; font-weight: bold; cursor: pointer;">
                             Solicitar
                         </button>
@@ -717,6 +720,65 @@ function confirmarExclusao(nome, id) {
         navigate('dados_filhos'); // Recarrega a página para sumir da lista
     }
 }
+
+// Versão nova da solicitação
+async function tentarSolicitar(isbn, titulo, pontos) {
+
+    if (!usuarioLogado) {
+
+        alert("Ops! Você precisa estar logado.");
+
+        navigate('login');
+
+        return;
+    }
+
+    const confirmar = confirm(
+        `Confirmar solicitação:\n\n${titulo}\n${pontos} créditos`
+    );
+
+    if (!confirmar) return;
+
+    try {
+
+        const usuarioId = localStorage.getItem('usuario_id');
+
+        const resposta = await fetch(`${API_URL}/api/retiradas`, {
+
+            method: 'POST',
+
+            headers: {
+                'Content-Type': 'application/json'
+            },
+
+            body: JSON.stringify({
+                usuario_id: usuarioId,
+                isbn: isbn
+            })
+        });
+
+        const dados = await resposta.json();
+
+        if (!resposta.ok) {
+
+            alert(dados.erro || 'Erro ao solicitar livro');
+
+            return;
+        }
+
+        alert('Livro solicitado com sucesso!');
+
+        navigate('consultar_dados');
+
+    } catch (erro) {
+
+        console.error(erro);
+
+        alert('Erro ao conectar com servidor');
+    }
+}
+
+/* Versão antiga da solicitação
 function tentarSolicitar(titulo, pontos) {
     if (!usuarioLogado) {
         alert("Ops! Você viu o livro, mas para solicitar precisa estar logado.");
@@ -733,3 +795,4 @@ function tentarSolicitar(titulo, pontos) {
         navigate('consultar_dados'); // Leva ele para ver a posição na fila
     }
 }
+*/
