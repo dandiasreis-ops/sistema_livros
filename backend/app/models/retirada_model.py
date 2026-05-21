@@ -29,6 +29,11 @@ class Retirada(db.Model):
         nullable=False
     )
 
+    prioridade = db.Column(
+        db.Integer, 
+        default=0
+    )
+
     status = db.Column(
         db.String(30),
         default='fila'

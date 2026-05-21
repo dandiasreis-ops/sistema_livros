@@ -154,3 +154,27 @@ def buscar_usuario(id):
         'email': usuario.email,
         'cpf': usuario.cpf
     })
+
+# ATUALIZAR DADOS
+@usuario_bp.route('/api/usuario/<int:id>', methods=['PUT'])
+def atualizar_usuario(id):
+
+    usuario = Usuario.query.get(id)
+
+    if not usuario:
+        return jsonify({
+            'erro': 'Usuário não encontrado'
+        }), 404
+
+    dados = request.json
+
+    usuario.email = dados.get('email')
+
+    if dados.get('senha'):
+        usuario.set_senha(dados.get('senha'))
+
+    db.session.commit()
+
+    return jsonify({
+        'mensagem': 'Usuário atualizado com sucesso'
+    })

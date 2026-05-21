@@ -1,3 +1,60 @@
+// Teste de que o front iniciou
+console.log("APP INICIOU");
+
+// Traduções pra motrar nos cards
+const traducoes = {
+
+    anosEscolares: {
+        "ciclo_basico": "Ciclo Básico",
+
+        "1fi": "1º ano",
+        "2fi": "2º ano",
+        "3fi": "3º ano",
+        "4fi": "4º ano",
+        "5fi": "5º ano",
+
+        "6fii": "6º ano",
+        "7fii": "7º ano",
+        "8fii": "8º ano",
+        "9fii": "9º ano",
+
+        "1em": "1ª Série",
+        "2em": "2ª Série",
+        "3em": "3ª Série"
+    },
+
+    bolsas: {
+        "nenhuma": "Sem bolsa",
+        "social": "Bolsa Social",
+        "merito": "Mérito Acadêmico"
+    },
+
+    tiposLivro: {
+        "didatico": "Livro Didático",
+
+        "livro_exs": "Livro de Exercícios",
+
+        "exs_poucas_rasuras":
+            "Exercícios com poucas rasuras",
+
+        "literatura": "Livro de Literatura",
+
+        "muitas_rasuras":
+            "Muitas rasuras"
+    },
+
+    disciplinas: {
+        "matematica": "Matemática",
+        "fisica": "Física",
+        "quimica": "Química",
+        "biologia": "Biologia",
+        "historia": "História",
+        "geografia": "Geografia",
+        "portugues": "Português",
+        "ingles": "Inglês"
+    }
+};
+
 // Função extra para normalizar a busca
 function normalizarTexto(texto) {
     return texto
@@ -7,7 +64,7 @@ function normalizarTexto(texto) {
 }
 
 // Função principal de navegação da SPA
-let usuarioLogado = false;
+let usuarioLogado = !!localStorage.getItem('token'); // Corrige o token quando a página atualiza
 function navigate(page) {
     // 1. Identifica o "palco" onde a tela será exibida
     const app = document.getElementById('app');
@@ -17,7 +74,58 @@ function navigate(page) {
 
     // 3. Verifica qual opção o usuário selecionou e "desenha" a tela
     if (page === 'home') {
-        app.innerHTML = "<h1> Sistema de Doação de Livros</h1><p>Aqui você verá seu saldo de créditos.</p>";
+        app.innerHTML = `
+        <div style="padding: 20px;">
+
+            <h1 style="
+                color:#004587;
+                margin-bottom:10px;
+            ">
+                📚 Sistema de Doação de Livros
+            </h1>
+
+            <p style="
+                color:#555;
+                margin-bottom:25px;
+                line-height:1.5;
+            ">
+                Plataforma de economia circular para reutilização de livros escolares.
+            </p>
+
+            <div style="
+                background:white;
+                border-radius:12px;
+                padding:18px;
+                box-shadow:0 2px 6px rgba(0,0,0,0.08);
+                margin-bottom:20px;
+            ">
+
+                <h3 style="color:#004587; margin-bottom:12px;">
+                    🚀 Como funciona?
+                </h3>
+
+                <div style="line-height:1.8; color:#444; font-size:0.95rem;">
+                    📖 Cadastre livros usados em bom estado.<br>
+                    🎯 Receba créditos automaticamente.<br>
+                    🛍️ Use os créditos para solicitar novos livros.<br>
+                    👨‍🎓 Cadastre estudantes para prioridade social.<br>
+                    ♻️ Ajude outras famílias economizando recursos.
+                </div>
+            </div>
+
+            <div style="
+                background:#e8f4ff;
+                border-left:5px solid #004587;
+                padding:15px;
+                border-radius:8px;
+                color:#333;
+                line-height:1.5;
+            ">
+                💡 Dica: alunos com bolsa e bom desempenho acadêmico possuem prioridade maior na fila de retirada.
+            </div>
+
+        </div>
+        `;
     }
 // Substitua os blocos antigos por este:
 else if (page === 'ver_livros' || page === 'acervo') {
@@ -28,7 +136,7 @@ else if (page === 'ver_livros' || page === 'acervo') {
             <input type="text" id="busca_livro" placeholder="Pesquisar por título ou autor..." 
                 style="padding: 12px; border-radius: 8px; border: 1px solid #ccc; width: 100%; margin-bottom: 15px;">
 
-            <div id="vitrine-livros" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div id="vitrine-livros" style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items:start;">
                 <p style="grid-column: span 2; text-align: center; padding: 20px;">Carregando livros...</p>
             </div>
 
@@ -52,16 +160,75 @@ else if (page === 'ver_livros' || page === 'acervo') {
                 }
 
                 vitrine.innerHTML = lista.map(livro => `
-                    <div style="border: 1px solid #ddd; border-radius: 12px; padding: 10px; text-align: center; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
-                        <div style="font-size: 2.2rem; margin-bottom: 5px;">📖</div>
-                        <strong style="display: block; font-size: 0.85rem; height: 35px; overflow: hidden;">${livro.titulo}</strong>
-                        <div style="color: #28a745; font-weight: bold; margin: 8px 0;">${livro.pontos} pts</div>
-                        
+                    <div style="
+                        border: 1px solid #ddd;
+                        border-radius: 12px;
+                        padding: 12px;
+                        background: white;
+                        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+
+                        display:flex;
+                        flex-direction:column;
+                        justify-content: center;
+                        align-items: center; 
+
+                        min-height:220px;
+                    ">
+
+                        <div style="font-size: 2rem; text-align:center;">📖</div>
+
+                        <strong style="
+                            display:block;
+                            font-size:0.9rem;
+                            margin:8px 0;
+                            color:#004587;
+                        ">
+                            ${livro.titulo}
+                        </strong>
+
+                        <div style="font-size:0.8rem; color:#555; margin-bottom:4px;">
+                            🎓 ${traducoes.anosEscolares[livro.ano_escolar] || livro.ano_escolar || 'Ano não informado'}
+                        </div>
+
+                        <div style="font-size:0.8rem; color:#555; margin-bottom:4px;">
+                            📚 ${traducoes.disciplinas[livro.disciplina] || livro.disciplina || 'Sem disciplina'}
+                        </div>
+
+                        <div style="font-size:0.8rem; color:#555; margin-bottom:4px;">
+                            🏷️ ${traducoes.tiposLivro[livro.origem_livro] || livro.origem_livro || 'Tipo não informado'}
+                        </div>
+
+                        <div style="font-size:0.8rem; color:#555; margin-bottom:4px;">
+                            📖 ${livro.edicao || '-'}ª edição
+                        </div>
+
+                        <div style="
+                            color:#28a745;
+                            font-weight:bold;
+                            margin:10px 0;
+                            font-size:1rem;
+                        ">
+                            ${livro.pontos} pts
+                        </div>
+
                         <button onclick="tentarSolicitar(
                             '${livro.isbn}',
                             '${livro.titulo}',
-                            ${livro.pontos})" 
-                            style="width: 100%; background: #004587; color: white; border: none; padding: 8px; border-radius: 5px; font-size: 0.8rem; font-weight: bold; cursor: pointer;">
+                            ${livro.pontos})"
+
+                            style="
+                                width:100%;
+                                background:#004587;
+                                color:white;
+                                border:none;
+                                padding:10px;
+                                border-radius:6px;
+                                font-size:0.8rem;
+                                font-weight:bold;
+                                cursor:pointer;
+
+                                margin-top:auto;
+                            ">
                             Solicitar
                         </button>
                     </div>
@@ -104,29 +271,96 @@ else if (page === 'ver_livros' || page === 'acervo') {
                     
                     <input type="text" id="titulo" placeholder="Título do Livro" required style="padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
 
-                    <input type="text" id="isbn" placeholder="ISBN" required style="padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
+                    <input type="text" pattern="[0-9]{10,13}" id="isbn" placeholder="ISBN" required style="padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
                     
+                    <select id="ano_escolar_livro" style="padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
+                        <option value="" disabled selected>Ano Escolar</option>
+
+                        <option value="ciclo_basico">Ciclo Básico</option>
+
+                        <optgroup label="Fundamental I">
+                            <option value="1fi">1º ano</option>
+                            <option value="2fi">2º ano</option>
+                            <option value="3fi">3º ano</option>
+                            <option value="4fi">4º ano</option>
+                            <option value="5fi">5º ano</option>
+                        </optgroup>
+
+                        <optgroup label="Fundamental II">
+                            <option value="6fii">6º ano</option>
+                            <option value="7fii">7º ano</option>
+                            <option value="8fii">8º ano</option>
+                            <option value="9fii">9º ano</option>
+                        </optgroup>
+
+                        <optgroup label="Ensino Médio">
+                            <option value="1em">1º Série</option>
+                            <option value="2em">2º Série</option>
+                            <option value="3em">3º Série</option>
+                        </optgroup>
+                    </select>
+
                     <select id="estado" style="padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
-                        <option value="" disabled selected>Estado</option>
+                        <option value="" disabled selected>Estado do Livro</option>
+
+                        <option value="novo">Novo</option>
                         <option value="excelente">Excelente</option>
                         <option value="bom">Bom</option>
                         <option value="regular">Regular</option>
+                        <option value="ruim">Ruim</option>
                     </select>
 
                     <div style="display: flex; gap: 5px;">
-                        <input type="number" id="ano_publicacao" placeholder="Ano Pub." style="flex: 1; padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
-                        <input type="text" id="edicao" placeholder="Edição" style="flex: 1; padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
-                    </div>
+                        <select id="ano_publicacao" style="flex: 1; padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
+                            <option value="" disabled selected>Ano de Publicação</option>
+                            <option value="2026">2026</option>
+                            <option value="2025">2025</option>
+                            <option value="2024">2024</option>
+                            <option value="2023">2023</option>
+                            <option value="2022">2022</option>
+                            <option value="2021">2021</option>
+                            <option value="2020">2020</option>
+                        </select>
 
-                    <input type="text" id="disciplina" placeholder="Disciplina (Ex: Física)" style="padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
-                    
-                    <div style="display: flex; gap: 5px;">
-                        <input type="number" id="ano_uso" placeholder="Ano de Uso" style="flex: 1; padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
-                        <input type="number" id="quantidade" placeholder="Qtd" style="width: 60px; padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
-                    </div>
+                        <select id="edicao" style="flex: 1; padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
+                            <option value="" disabled selected>Edição</option>
 
-                    <input type="text" id="origem_livro" placeholder="Origem do Livro" style="padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
+                            <option value="1">1ª</option>
+                            <option value="2">2ª</option>
+                            <option value="3">3ª</option>
+                            <option value="4">4ª</option>
+                            <option value="5">5ª</option>
+                            <option value="6">6ª</option>
+                            <option value="7">7ª</option>
+                            <option value="8">8ª</option>
+                            <option value="9">9ª</option>
+                            <option value="10">10ª</option>
+                        </select>
+                    </div>
                     
+                    <select id="disciplina" style="padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
+                        <option value="" disabled selected>Disciplina</option>
+
+                        <option value="matematica">Matemática</option>
+                        <option value="fisica">Física</option>
+                        <option value="quimica">Química</option>
+                        <option value="biologia">Biologia</option>
+                        <option value="historia">História</option>
+                        <option value="geografia">Geografia</option>
+                        <option value="portugues">Português</option>
+                        <option value="ingles">Inglês</option>
+                    </select>
+
+                    <select id="origem_livro" style="padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
+                        <option value="" disabled selected>Tipo de Livro</option>
+
+                        <option value="didatico">Livro Didático</option>
+                        <option value="livro_exs">Livro de Exercícios (sem rasuras)</option>
+                        <option value="exs_poucas_rasuras">Livro de Exercícios (algumas rasuras)</option>
+                        <option value="literatura">Livro de Literatura</option>
+                        <option value="muitas_rasuras">Didático ou Exercícios (muitas rasuras)</option>
+                    </select>
+
                     <button type="submit" style="background-color: #28a745; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; font-weight: bold;">
                         Cadastrar Livro
                     </button>
@@ -138,11 +372,15 @@ else if (page === 'ver_livros' || page === 'acervo') {
                 e.preventDefault();
 
                 const dadosLivro = {
+                    usuario_id: localStorage.getItem('usuario_id'),
                     isbn: document.getElementById('isbn').value,
                     titulo: document.getElementById('titulo').value,
+                    ano_escolar: document.getElementById('ano_escolar_livro').value,
+                    origem_livro: document.getElementById('origem_livro').value,
+                    ano_publicacao: document.getElementById('ano_publicacao').value,
+                    edicao: document.getElementById('edicao').value,
                     disciplina: document.getElementById('disciplina').value,
                     estado: document.getElementById('estado').value,
-                    quantidade: document.getElementById('quantidade').value
                 };
 
                 try {
@@ -182,7 +420,7 @@ else if (page === 'ver_livros' || page === 'acervo') {
 
 
  else if (page === 'perfil') {
-    // 1. Verificação de Segurança (Mantendo o que você pediu)
+    // 1. Verificação de Segurança
     if (!usuarioLogado) {
         app.innerHTML = `
             <div style="padding: 20px; text-align: center;">
@@ -204,7 +442,7 @@ else if (page === 'ver_livros' || page === 'acervo') {
         fetch(`${API_URL}/api/dashboard?usuario_id=${usuarioId}`)
             .then(res => res.json())
             .then(dados => {
-                // AQUI UNIMOS O VISUAL BONITO COM TODOS OS SEUS BOTÕES
+                // AQUI UNIMOS O VISUAL BONITO COM TODOS OS BOTÕES
                 app.innerHTML = `
                     <div style="padding: 15px;">
                         <h2 style="color: #004587; margin-bottom: 5px;">Gestão da Conta</h2>
@@ -269,27 +507,53 @@ else if (page === 'ver_livros' || page === 'acervo') {
                 <input type="text" id="ra" placeholder="RA / Matrícula" required style="padding: 12px; border-radius: 8px; border: 1px solid #ccc;">
                 
                 <select id="ano_escolar" required style="padding: 12px; border-radius: 8px; border: 1px solid #ccc; background: white;">
-                    <option value="" disabled selected>Selecione o ano escolar</option>
+                    <option value="" disabled selected>Ano escolar</option>
                     
-                    <option value="ciclo_basico">Ciclo Básico (Engenharia/Data Science)</option>
+                        <option value="ciclo_basico">Ciclo Básico</option>
 
-                    <optgroup label="Ensino Médio">
-                        <option value="1em">1ª Série do Médio</option>
-                        <option value="2em">2ª Série do Médio</option>
-                        <option value="3em">3ª Série do Médio</option>
-                    </optgroup>
+                        <optgroup label="Fundamental I">
+                            <option value="1fi">1º ano</option>
+                            <option value="2fi">2º ano</option>
+                            <option value="3fi">3º ano</option>
+                            <option value="4fi">4º ano</option>
+                            <option value="5fi">5º ano</option>
+                        </optgroup>
 
-                    <optgroup label="Ensino Fundamental">
-                        <option value="fund_ii">Fundamental II (6º ao 9º)</option>
-                        <option value="fund_i">Fundamental I (1º ao 5º)</option>
-                    </optgroup>
+                        <optgroup label="Fundamental II">
+                            <option value="6fii">6º ano</option>
+                            <option value="7fii">7º ano</option>
+                            <option value="8fii">8º ano</option>
+                            <option value="9fii">9º ano</option>
+                        </optgroup>
+
+                        <optgroup label="Ensino Médio">
+                            <option value="1em">1º Série</option>
+                            <option value="2em">2º Série</option>
+                            <option value="3em">3º Série</option>
+                        </optgroup>
+                    </select>
                 </select>
 
-                <input type="number" id="media_notas" step="0.1" placeholder="Média Geral" required style="padding: 12px; border-radius: 8px; border: 1px solid #ccc;">
+                <input type="number" min="0" max="10" step="0.1" id="media_notas" step="0.1" placeholder="Média Geral" required style="padding: 12px; border-radius: 8px; border: 1px solid #ccc;">
                 
                 <div style="display: flex; gap: 10px;">
-                    <input type="text" id="tipo_de_bolsa" placeholder="Tipo de Bolsa" style="flex: 2; padding: 12px; border-radius: 8px; border: 1px solid #ccc;">
-                    <input type="text" id="bolsa_percentual" placeholder="%" style="flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #ccc;">
+                    <select id="tipo_bolsa" style="flex: 2; padding: 12px; border-radius: 8px; border: 1px solid #ccc;">
+                        <option value="" disabled selected>Tipo de Bolsa</option>
+
+                        <option value="nenhuma">Sem bolsa</option>
+                        <option value="social">Bolsa Social</option>
+                        <option value="merito">Bolsa Mérito Acadêmico</option>
+                    </select>
+
+                    <select id="bolsa_percentual" style="flex: 2; padding: 12px; border-radius: 8px; border: 1px solid #ccc;">
+                        <option value="" disabled selected>Percentual</option>
+
+                        <option value="0">0%</option>
+                        <option value="25">25%</option>
+                        <option value="50">50%</option>
+                        <option value="75">75%</option>
+                        <option value="100">100%</option>
+                    </select>
                 </div>
 
                 <div style="display: flex; gap: 10px; margin-top: 15px;">
@@ -305,6 +569,23 @@ else if (page === 'ver_livros' || page === 'acervo') {
         </div>
     `;
 
+    // Desativar percentual se não tem bolsa
+    const selectBolsa = document.getElementById('tipo_bolsa');
+    const percentualInput = document.getElementById('bolsa_percentual');
+
+    selectBolsa.onchange = () => {
+
+        if (selectBolsa.value === 'nenhuma') {
+
+            percentualInput.disabled = true;
+            percentualInput.value = '';
+
+        } else {
+
+            percentualInput.disabled = false;
+        }
+    };
+
     // Lógica para enviar os dados para o Banco (POST)
     document.getElementById('form-estudante').onsubmit = async (e) => {
         e.preventDefault();
@@ -314,9 +595,9 @@ else if (page === 'ver_livros' || page === 'acervo') {
             nome: document.getElementById('nome').value,
             ra: document.getElementById('ra').value,
             ano_escolar: document.getElementById('ano_escolar').value,
-            media: document.getElementById('media_notas').value,
-            bolsa: document.getElementById('tipo_de_bolsa').value,
-            percentual: document.getElementById('bolsa_percentual').value
+            media_notas: document.getElementById('media_notas').value,
+            tipo_bolsa: document.getElementById('tipo_bolsa').value,
+            bolsa_percentual: document.getElementById('bolsa_percentual').value
         };
 
         // ENVIANDO PARA O BANCO DE DADOS
@@ -497,41 +778,90 @@ else if (page === 'ver_livros' || page === 'acervo') {
     fetch(`${API_URL}/api/extrato?usuario_id=${usuarioId}`)
         .then(res => res.json())
         .then(dados => {
+
+            console.log(dados); // Teste de dados
+
+            let filaHtml = "";
+            let liberadosHtml = "";
+            let concluidosHtml = "";
             let doadosHtml = "";
-            let retiradosHtml = "";
 
-            // 3. Loop para processar cada item do histórico
-            dados.historico.forEach(item => {
+            // 3. Nova versão do Extrato/Histórico, que divide os itens por status
+            // FILA
+            (dados.fila || []).forEach(item => {
 
-                // --- LÓGICA DE FILA E PRIORIDADE SOCIAL ---
-                // Se o status for liberado, tag verde. Se estiver na fila, tag amarela com posição.
-                const tagStatus = item.status === 'liberado'
-                    ? '<span style="background: #28a745; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; font-weight: bold;">Liberado</span>'
-                    : `<span style="background: #ffc107; color: #856404; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; font-weight: bold;">Fila: Pos. ${item.posicao}</span>`;
-
-                // Montagem do Card
                 const cardHtml = `
-                    <div style="background: #f8f9fa; padding: 12px; border-radius: 10px; border: 1px solid #ddd; margin-bottom: 10px; border-left: 5px solid ${item.tipo === 'doacao' ? '#28a745' : '#dc3545'};">
-                        <div style="display: flex; justify-content: space-between; align-items: start;">
-                            <div>
-                                <strong style="display: block; font-size: 0.9rem;">${item.titulo}</strong>
-                                <small style="color: #666;">Data: ${item.data}</small>
-                            </div>
-                            <div style="text-align: right;">
-                                <div style="font-weight: bold; color: ${item.tipo === 'doacao' ? '#28a745' : '#dc3545'}; margin-bottom: 5px;">
-                                    ${item.tipo === 'doacao' ? '+' : '-'}${item.pontos} pts
-                                </div>
-                                ${item.tipo === 'retirada' ? tagStatus : ''} 
-                            </div>
-                        </div>
-                    </div>`;
+                    <div style="background: #fff3cd; padding: 12px; border-radius: 10px; margin-bottom: 10px;">
+                        <strong>${item.titulo}</strong><br>
 
-                // Separa em doação ou retirada
-                if (item.tipo === 'doacao') {
-                    doadosHtml += cardHtml;
-                } else {
-                    retiradosHtml += cardHtml;
-                }
+                        <small>Data: ${item.data}</small><br>
+
+                        <span style="
+                            background: #ffc107;
+                            color: #856404;
+                            padding: 2px 6px;
+                            border-radius: 4px;
+                            font-size: 0.7rem;
+                            font-weight: bold;
+                        ">
+                            Fila: Pos. ${item.posicao}
+                        </span>
+                    </div>
+                `;
+
+                filaHtml += cardHtml;
+            });
+
+
+            // LIBERADOS
+            (dados.liberados || []).forEach(item => {
+
+                const cardHtml = `
+                    <div style="background: #d4edda; padding: 12px; border-radius: 10px; margin-bottom: 10px;">
+                        <strong>${item.titulo}</strong><br>
+
+                        <small>Data: ${item.data}</small><br>
+
+                        <span style="
+                            background: #28a745;
+                            color: white;
+                            padding: 2px 6px;
+                            border-radius: 4px;
+                            font-size: 0.7rem;
+                            font-weight: bold;
+                        ">
+                            Disponível para Retirada
+                        </span>
+                    </div>
+                `;
+
+                liberadosHtml += cardHtml;
+            });
+
+
+            // CONCLUÍDOS
+            (dados.concluidos || []).forEach(item => {
+
+                const cardHtml = `
+                    <div style="background: #d1ecf1; padding: 12px; border-radius: 10px; margin-bottom: 10px;">
+                        <strong>${item.titulo}</strong><br>
+
+                        <small>Data: ${item.data}</small><br>
+
+                        <span style="
+                            background: #004587;
+                            color: white;
+                            padding: 2px 6px;
+                            border-radius: 4px;
+                            font-size: 0.7rem;
+                            font-weight: bold;
+                        ">
+                            Livro Retirado
+                        </span>
+                    </div>
+                `;
+
+                concluidosHtml += cardHtml;
             });
 
             // 4. Renderiza a página final (O Visual que o professor vai ver)
@@ -547,12 +877,27 @@ else if (page === 'ver_livros' || page === 'acervo') {
 
                     <h3 style="font-size: 1rem; border-bottom: 2px solid #28a745; padding-bottom: 5px; color: #28a745;">✅ Minhas Doações</h3>
                     <div style="margin: 10px 0 20px 0;">
-                        ${doadosHtml || '<p style="color: #999; font-size: 0.8rem;">Você ainda não doou livros.</p>'}
+                        ${dados.doacoes.map(livro => `
+                            <div style="background:#e8f5e9; padding:10px; border-radius:8px; margin-bottom:8px;">
+                                <strong>${livro.titulo}</strong><br>
+                                <small>+${livro.pontos} créditos recebidos</small>
+                            </div>
+                        `).join('')}
                     </div>
-                    
-                    <h3 style="font-size: 1rem; border-bottom: 2px solid #dc3545; padding-bottom: 5px; color: #dc3545;">⏳ Minhas Solicitações (Fila)</h3>
-                    <div style="margin: 10px 0;">
-                        ${retiradosHtml || '<p style="color: #999; font-size: 0.8rem;">Nenhum livro solicitado.</p>'}
+
+                    <h3 style="color: #856404;">⏳ Em Fila</h3>
+                    <div>
+                        ${filaHtml || '<p>Nenhuma solicitação na fila.</p>'}
+                    </div>
+
+                    <h3 style="color: #155724; margin-top: 20px;">✅ Liberados</h3>
+                    <div>
+                        ${liberadosHtml || '<p>Nenhum livro liberado.</p>'}
+                    </div>
+
+                    <h3 style="color: #6c757d; margin-top: 20px;">📚 Concluídos</h3>
+                    <div>
+                        ${concluidosHtml || '<p>Nenhuma retirada concluída.</p>'}
                     </div>
 
                     <button onclick="navigate('perfil')" 
@@ -623,8 +968,18 @@ else if (page === 'ver_livros' || page === 'acervo') {
                 `;
 
                 // Lógica de envio para o banco (Update)
-                document.getElementById('form-editar').onsubmit = (e) => {
+                document.getElementById('form-editar').onsubmit = async (e) => {
                     e.preventDefault();
+                    
+                    // Teste para atualização de senha
+                    const campoSenha = document.getElementById('edit_senha');
+                    const campoConfirma = document.getElementById('edit_confirma');
+
+                    if (!campoSenha || !campoConfirma) {
+                        alert("Campos de senha não encontrados.");
+                        return;
+                    }
+
                     const novaSenha = document.getElementById('edit_senha').value;
                     const confirma = document.getElementById('edit_confirma').value;
 
@@ -633,9 +988,41 @@ else if (page === 'ver_livros' || page === 'acervo') {
                         return;
                     }
 
-                    // Aqui você faria um fetch com método 'PUT' ou 'POST' para salvar no banco
-                    alert("✅ Dados atualizados com sucesso no sistema!");
-                    navigate('perfil');
+                    try {
+
+                        const usuarioId = localStorage.getItem('usuario_id');
+
+                        const resposta = await fetch(
+                            `${API_URL}/api/usuario/${usuarioId}`,
+                            {
+                                method: 'PUT',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    email: document.getElementById('edit_email').value,
+                                    senha: novaSenha
+                                })
+                            }
+                        );
+
+                        const dados = await resposta.json();
+
+                        if (!resposta.ok) {
+                            alert(dados.erro);
+                            return;
+                        }
+
+                        alert("✅ Dados atualizados com sucesso!");
+
+                        navigate('perfil');
+
+                    } catch (erro) {
+
+                        console.error(erro);
+
+                        alert("Erro ao atualizar usuário");
+                    }
                 };
             })
             .catch(err => {
@@ -663,17 +1050,80 @@ else if (page === 'ver_livros' || page === 'acervo') {
                 let htmlLista = "";
 
                 filhos.forEach(f => {
-                    // Usamos o SEU modelo de card bonito aqui
+                    // Usamos o modelo de card bonito aqui
                     htmlLista += `
-                        <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; border: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <div style="
+                        background: white;
+                        padding: 15px;
+                        border-radius: 12px;
+                        border: 1px solid #ddd;
+                        margin-bottom: 15px;
+                        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+                    ">
+
+                        <div style="
+                            display:flex;
+                            justify-content:space-between;
+                            align-items:flex-start;
+                            margin-bottom:10px;
+                        ">
                             <div>
-                                <strong style="display: block;">${f.nome}</strong>
-                                <small style="color: #666;">RA: ${f.ra} | ${f.ano_escolar}</small>
+                                <strong style="font-size:1rem; color:#004587;">
+                                    ${f.nome}
+                                </strong><br>
+
+                                <small style="color:#666;">
+                                    RA: ${f.ra}
+                                </small>
                             </div>
-                            <button onclick="confirmarExclusao('${f.nome}', ${f.id})" style="background: none; border: none; color: #dc3545; font-size: 1.2rem; cursor: pointer;">
-                                🗑️
-                            </button>
-                        </div>`;
+
+                            <div style="
+                                background:#004587;
+                                color:white;
+                                padding:8px 12px;
+                                border-radius:10px;
+                                text-align:center;
+                                min-width:70px;
+                            ">
+                                <div style="font-size:0.7rem;">
+                                    Prioridade
+                                </div>
+
+                                <div style="
+                                    font-size:1.2rem;
+                                    font-weight:bold;
+                                ">
+                                    ${f.prioridade || 0}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="font-size:0.85rem; color:#555; line-height:1.6;">
+                            🎓 ${traducoes.anosEscolares[f.ano_escolar] || f.ano_escolar}<br>
+                            📊 Média: ${f.media_notas}<br>
+                            🎯 Bolsa: ${traducoes.bolsas[f.tipo_bolsa] || f.tipo_bolsa || 'Nenhuma'}<br>
+                            💰 Percentual: ${f.bolsa_percentual || 0}%
+                        </div>
+
+                        <button 
+                            onclick="confirmarExclusao('${f.nome}', ${f.id})"
+
+                            style="
+                                margin-top:12px;
+                                width:100%;
+                                background:#fff1f1;
+                                border:1px solid #dc3545;
+                                color:#dc3545;
+                                padding:10px;
+                                border-radius:8px;
+                                cursor:pointer;
+                                font-weight:bold;
+                            "
+                        >
+                            🗑️ Remover
+                        </button>
+                    </div>
+                    `;
                 });
 
                 // Inserimos a lista e os botões de ação
@@ -710,14 +1160,39 @@ else if (page === 'ver_livros' || page === 'acervo') {
 
 // Carrega a página inicial assim que o site abrir
 window.onload = () => navigate('home');
-function confirmarExclusao(nome, id) {
-    // Abre aquela janelinha de confirmação do navegador
-    const certeza = confirm("Tem certeza que deseja excluir os dados de " + nome + "?");
+async function confirmarExclusao(nome, id) {
 
-    if (certeza) {
-        alert(nome + " removido com sucesso!");
-        // Aqui no futuro você vai colocar o código para apagar do banco de dados
-        navigate('dados_filhos'); // Recarrega a página para sumir da lista
+    const certeza = confirm(
+        "Tem certeza que deseja excluir os dados de " + nome + "?"
+    );
+
+    if (!certeza) return;
+
+    try {
+
+        const resposta = await fetch(
+            `http://127.0.0.1:5000/api/estudantes/${id}`,
+            {
+                method: 'DELETE'
+            }
+        );
+
+        const dados = await resposta.json();
+
+        if (!resposta.ok) {
+            alert(dados.erro);
+            return;
+        }
+
+        alert("✅ " + nome + " removido com sucesso!");
+
+        navigate('dados_filhos');
+
+    } catch (erro) {
+
+        console.error(erro);
+
+        alert("Erro ao remover estudante");
     }
 }
 
@@ -777,22 +1252,3 @@ async function tentarSolicitar(isbn, titulo, pontos) {
         alert('Erro ao conectar com servidor');
     }
 }
-
-/* Versão antiga da solicitação
-function tentarSolicitar(titulo, pontos) {
-    if (!usuarioLogado) {
-        alert("Ops! Você viu o livro, mas para solicitar precisa estar logado.");
-        navigate('login');
-        return;
-    }
-
-    // Se estiver logado, abre a confirmação (O detalhe da solicitação)
-    const confirmar = confirm(`Confirmar solicitação do livro: ${titulo}\nCusto: ${pontos} créditos.\n\nDeseja entrar na fila de espera?`);
-
-    if (confirmar) {
-        // TÓPICO 4: Aqui você enviaria o POST para o servidor
-        alert(`✅ Solicitação realizada!\nO livro "${titulo}" agora aparece no seu extrato.`);
-        navigate('consultar_dados'); // Leva ele para ver a posição na fila
-    }
-}
-*/

@@ -24,6 +24,7 @@ CREATE TABLE estudantes (
 );
 
 CREATE TABLE livros (
+	usuario_id INT,
     isbn VARCHAR(20) PRIMARY KEY,
     titulo VARCHAR(200),
     disciplina VARCHAR(100),
@@ -64,38 +65,82 @@ CREATE TABLE historico (
 );
 
 INSERT INTO livros (
+	usuario_id,
     isbn,
     titulo,
+    ano_escolar,
+    origem_livro,
+    ano_publicacao,
+    edicao,
     disciplina,
     estado,
     preco_creditos,
-    quantidade
+    disponivel
 )
 VALUES
 (
+	1,
     '9788521636953',
     'Cálculo I',
-    'Matemática',
+    '3em',
+    'didatico',
+    2024,
+    '5',
+    'matematica',
     'bom',
     30,
-    5
+    true
 ),
 (
+    1,
     '9788533613379',
     'Física Geral',
-    'Física',
+    '3em',
+    'didatico',
+    2025,
+    '3',
+    'fisica',
     'excelente',
     25,
-    3
+    true
 ),
 (
+    1,
     '9788575227183',
     'Algoritmos',
-    'Programação',
+    '2em',
+    'livro_exs',
+    2023,
+    '4',
+    'matematica',
     'regular',
     20,
-    4
+    true
 );
+
+#Alterações nas tabelas
+ALTER TABLE livros
+ADD COLUMN usuario_id INT;
+
+ALTER TABLE retiradas
+ADD COLUMN prioridade INT DEFAULT 0;
+
+ALTER TABLE livros
+ADD disponivel BOOLEAN DEFAULT TRUE;
+
+ALTER TABLE livros
+ADD COLUMN ano_escolar VARCHAR(20);
+
+ALTER TABLE livros
+ADD COLUMN origem VARCHAR(50),
+ADD COLUMN ano_publicacao INT,
+ADD COLUMN edicao INT;
+
+ALTER TABLE livros
+DROP COLUMN quantidade;
+
+ALTER TABLE livros
+CHANGE origem origem_livro VARCHAR(50);
 
 #Selects para testes
 SELECT * FROM usuarios;
@@ -105,9 +150,28 @@ SELECT * FROM doacoes;
 SELECT * FROM retiradas;
 SELECT * FROM historico;
 
-#DELETE FROM estudantes; - usar com cuidado!!!
+#Usar com cuidado!!!
+#DELETE FROM estudantes;
+#DELETE FROM retiradas;
+#DELETE FROM livros;
+#DELETE FROM historico;
 
 #Colocar saldo específico para testes
 UPDATE usuarios
-SET saldo_creditos = 200
+SET saldo_creditos = 0
 WHERE id = 7;
+
+#Colocar livros manualmente em liberado e concluído
+UPDATE retiradas
+SET status = 'liberado'
+WHERE id = 8;
+
+UPDATE retiradas
+SET status = 'concluido'
+WHERE id = 6;
+
+#Resetar IDs
+ALTER TABLE estudantes AUTO_INCREMENT = 1;
+ALTER TABLE retiradas AUTO_INCREMENT = 1;
+ALTER TABLE livros AUTO_INCREMENT = 1;
+ALTER TABLE historico AUTO_INCREMENT = 1;
