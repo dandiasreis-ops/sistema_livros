@@ -219,4 +219,3 @@ O projeto busca incentivar:
 * acesso mais democrático a livros escolares
 
 ---
-* HTML/CSS
